@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cstring>
 
 using namespace std;
 typedef union key {
@@ -13,6 +14,8 @@ int main()
     KEY k;
     char *read = &r.read;
     char *key = &k.read;
+    key[0] = 'a';
+    key[1] = 'b';
     string inputFileName;
     string outputFileName = "output.txt";
     // char *read = new char[2];
