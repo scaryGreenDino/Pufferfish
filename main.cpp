@@ -2,15 +2,22 @@
 #include <fstream>
 
 using namespace std;
+typedef union key {
+    char read;
+    unsigned short bytes;
+} KEY;
 int main()
 {
     //--------------------------Setup Files---
-    string key;
+    KEY r;
+    KEY k;
+    char *read = &r.read;
+    char *key = &k.read;
     string inputFileName;
     string outputFileName = "output.txt";
-    char *read = new char[2];
+    // char *read = new char[2];
     // cout << "Please enter your key: " << endl;
-    // cin >> key;
+    // cin >> k;
     // cout << "Please enter input file: " << endl;
     // cin >> inputFileName;
     inputFileName = "input.txt";
@@ -34,13 +41,16 @@ int main()
     {
         in.read(read, 2);
         out.write(read, 2);
+        cout << r.bytes << endl;
     }
     if (oddFlag)
     {
         in.read(read, 1);
         read[1] = 0;
         out.write(read, 1);
+        cout << r.bytes << endl;
     }
     in.close();
+    out.close();
     return 0;
 }
