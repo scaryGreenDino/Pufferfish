@@ -47,12 +47,12 @@ char *xorb(char *a, char *b)
     bk.read[1] = b[1];
     ak.bytes = ak.bytes ^ bk.bytes;
     a[0] = ak.read[0];
-    a[1] = bk.read[1];
+    a[1] = ak.read[1];
     return a;
 }
-char *f(char *a)
+char f(char *a)
 {
-    return a;
+    return *a;
 }
 
 char *encrypt(char *a, char *b, int c)
@@ -65,7 +65,8 @@ char *encrypt(char *a, char *b, int c)
         return concat(a, b);
     }
     a = xora(a, P[c]);
-    char *fa = f(a);
+    char *fa = new char[2];
+    *fa = f(a);
     b = xorb(fa, b);
     c++;
     return encrypt(b, a, c);
@@ -97,7 +98,9 @@ int main()
     in.seekg(0, in.end);
     inSize = in.tellg();
     in.seekg(0);
-    char *buffer = new char[inSize];
+    int r = inSize % 4;
+    inSize = inSize + (4 - r);
+    char *buffer = (char *)calloc(inSize, sizeof(char));
     in.read(buffer, inSize);
     in.close();
     bool oddFlag = (inSize % 4 != 0);
@@ -106,8 +109,14 @@ int main()
     {
         inSize -= 1;
     }
-    cout << "Plaintext:  " << buffer << endl;
-    cout << "Ciphertext: ";
+    cout << "Plaintext:  ";
+    for (int c = 0; c < inSize; c++)
+    {
+        printf("%c", buffer[c]);
+    }
+
+    cout << endl
+         << "Ciphertext: ";
 
     for (int c = 0; c < inSize; c += 4)
     {
@@ -128,6 +137,7 @@ int main()
     //     out.write(encrypted, 1);
     //     cout << r.bytes << endl;
     // }
+    free(buffer);
     out.close();
     return 0;
 }
