@@ -24,27 +24,49 @@ char *concat(char *a, char *b)
     return ab;
 }
 
-char *xorb(char *a, char *b)
+char *xora(char *a, char *b)
 {
     union key k;
     k.read[0] = a[0];
     k.read[1] = a[1];
     unsigned short c = (short)stoi(b, NULL, 16);
     k.bytes = k.bytes ^ c;
-    return k.read;
+    a[0] = k.read[0];
+    a[1] = k.read[1];
+    return a;
+}
+char *xorb(char *a, char *b)
+{
+    union key ak;
+    union key bk;
+
+    ak.read[0] = a[0];
+    ak.read[1] = a[1];
+
+    bk.read[0] = b[0];
+    bk.read[1] = b[1];
+    ak.bytes = ak.bytes ^ bk.bytes;
+    a[0] = ak.read[0];
+    a[1] = bk.read[1];
+    return a;
+}
+char *f(char *a)
+{
+    return a;
 }
 
 char *encrypt(char *a, char *b, int c)
 {
     if (c == 8)
     {
-        //a= a xor P[9]
-        //b= b xor P[8]
+        a = xora(a, P[9]);
+        b = xora(b, P[8]);
+
         return concat(a, b);
     }
-    a = xorb(a, P[c]);
-    //fa = f(a)
-    //b = fa xor b
+    a = xora(a, P[c]);
+    char *fa = f(a);
+    b = xorb(fa, b);
     c++;
     return encrypt(b, a, c);
 }
