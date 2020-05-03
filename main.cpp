@@ -6,7 +6,7 @@
 using namespace std;
 typedef union key {
     char read[2];
-    unsigned short bytes;
+    short bytes = 0;
 };
 char *P[] = {"49fe", "d3c6", "7326", "1234", "defb", "5a8b", "1e61", "77ad", "94b2", "5731"};
 char *S[8][4] = {{"abcb", "7386", "6ea3", "4128"}, {"689b", "22c7", "532d", "a42b"}, {"0e52", "f025", "8724", "9ac0"}, {"776a", "629f", "4510", "3188"}, {"1111", "da99", "52bc", "dead"}, {"deaf", "beef", "5810", "7219"}, {"733b", "5ac7", "2468", "9753"}, {"8263", "820d", "e72f", "410c"}};
@@ -38,7 +38,6 @@ char *encrypt(char *a, char *b, int c)
 {
     if (c == 8)
     {
-
         //a= a xor P[9]
         //b= b xor P[8]
         return concat(a, b);
