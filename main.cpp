@@ -24,31 +24,6 @@ char *concat(char *a, char *b)
     return ab;
 }
 
-char *xora(char *a, char *b)
-{
-    union key k;
-    k.read[0] = a[0];
-    k.read[1] = a[1];
-    unsigned short c = (short)stoi(b, NULL, 16);
-    k.bytes = k.bytes ^ c;
-    a[0] = k.read[0];
-    a[1] = k.read[1];
-    return a;
-}
-char *xorb(char *a, char *b)
-{
-    union key ak;
-    union key bk;
-
-    ak.read[0] = a[0];
-    ak.read[1] = a[1];
-    bk.read[0] = b[0];
-    bk.read[1] = b[1];
-    ak.bytes = ak.bytes ^ bk.bytes;
-    a[0] = ak.read[0];
-    a[1] = ak.read[1];
-    return a;
-}
 void f(char *a, char *fa)
 {
     union key ak;
@@ -80,36 +55,25 @@ char *encrypt(char *ca, char *cb, int c, union key keys[])
     {
         a.bytes = a.bytes ^ keys[9].bytes;
         b.bytes = b.bytes ^ keys[8].bytes;
-
-        // a = xora(a, P[9]);
-        // b = xora(b, P[8]);
-
         return concat(a.read, b.read);
     }
-    // a = xora(a, P[c]);
     a.bytes = a.bytes ^ keys[c].bytes;
     union key fa;
     f(a.read, fa.read);
     b.bytes = fa.bytes ^ b.bytes;
-    // b = xorb(fa, b);
     c++;
     return encrypt(b.read, a.read, c, keys);
 }
 int main()
 {
-    unsigned short test = 65535;
-    test = test + 2;
-    cout << test << endl;
-    //--------------------------Setup Files---
-    // char *read = &r.read;
-    // char *key = &k.read;
     char *a = new char[2];
     char *b = new char[2];
-    // key[0] = 'a';
-    // key[1] = 'b';
     union key keys[10];
     union key temp;
     string t;
+    string inputFileName;
+    cout << "Please enter a filename to encrypt:";
+    cin >> inputFileName;
     cout << "Please enter key: ";
     cin >> t;
     const char *keyIn = t.c_str();
@@ -122,19 +86,9 @@ int main()
         pc = stoi(P[c], NULL, 16);
         keys[c].bytes = pc ^ temp.bytes;
     }
-    string inputFileName;
-    string outputFileName = "output.txt";
-    // char *read = new char[2];
-    // cout << "Please enter your key: " << endl;
-    // cin >> k;
-    // cout << "Please enter input file: " << endl;
-    // cin >> inputFileName;
-    inputFileName = "input.txt";
     ifstream in;
-    ofstream out;
     long inSize;
     in.open(inputFileName);
-    out.open(outputFileName);
 
     in.seekg(0, in.end);
     inSize = in.tellg();
@@ -168,17 +122,7 @@ int main()
 
         char *encrypted = encrypt(a, b, 0, keys);
         printf("%c%c%c%c", encrypted[0], encrypted[1], encrypted[2], encrypted[3]);
-        _sleep(1000);
     }
-    // if (oddFlag)
-    // {
-    //     in.read(a, 2);
-    //     in.read(b, 2);
-    //     char *encrypted = encrypt(a, b, 0);
-    //     out.write(encrypted, 1);
-    //     cout << r.bytes << endl;
-    // }
     free(buffer);
-    out.close();
     return 0;
 }
